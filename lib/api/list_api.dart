@@ -1,15 +1,24 @@
+import 'dart:io';
+
 import 'package:assessment/models/todo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:rxdart/rxdart.dart';
 
 class ListApi {
   late final CollectionReference db;
+  late List<DocumentSnapshot> documentList;
+
+  late BehaviorSubject<List<DocumentSnapshot>> todoController;
 
   ListApi() {
     db = FirebaseFirestore.instance.collection('todo');
+    todoController = BehaviorSubject<List<DocumentSnapshot>>();
   }
 
-  void addTodo({required Todo todo, required BuildContext context}) async {
+  Stream<List<DocumentSnapshot>> get todoStream => todoController.stream;
+
+  addTodo({required Todo todo, required BuildContext context}) async {
     await db.add(todo.toJSON()).then((value) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('TODO added!!'),
@@ -41,8 +50,31 @@ class ListApi {
       print(onError);
     });
   }
-  
-  getTodo() async {
-    return db.limit(10).snapshots();
+
+  getFirstTodo() async {
+    try {
+      documentList = (await db.limit(10).get()).docs;
+      todoController.sink.add(documentList);
+    } on SocketException {
+      todoController.sink.addError(SocketException('No Internet!!'));
+    } catch (e) {
+      todoController.sink.addError(e);
+    }
+  }
+
+  getNextTodo() async {
+    try {
+      List<DocumentSnapshot> newDocumentList = (await db
+              .limit(10)
+              .startAfterDocument(documentList[documentList.length - 1])
+              .get())
+          .docs;
+      documentList.addAll(newDocumentList);
+      todoController.sink.add(documentList);
+    } on SocketException {
+      todoController.sink.addError(SocketException('No Internet!!'));
+    } catch (e) {
+      todoController.sink.addError(e);
+    }
   }
 }

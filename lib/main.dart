@@ -1,3 +1,4 @@
+import 'package:assessment/pages/add.dart';
 import 'package:assessment/pages/list_page.dart';
 import 'package:assessment/pages/login_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -20,6 +21,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/login': (context) => LoginPage(),
         '/list': (context) => ListPage(),
+        '/add': (context) => AddPage(),
       },
       theme: ThemeData(
         primarySwatch: Colors.blue,

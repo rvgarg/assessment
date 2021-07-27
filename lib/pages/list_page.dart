@@ -14,49 +14,49 @@ class ListPageState extends State<ListPage> {
   ScrollController controller = ScrollController();
   var listAPI = ListApi();
   final PagingController _pagingController =
-      PagingController<int, Todo>(firstPageKey: 1);
+      PagingController(firstPageKey: 1);
 
   late var stream;
 
   @override
-  Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        TextFormField(
-          controller: _search,
-          decoration: InputDecoration(
-            labelText: 'Search',
-            icon: Icon(Icons.search),
-          ),
-        ),
-        Align(
-          child: IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () {
-              Navigator.of(context).pushNamed('/add');
-            },
-          ),
-          alignment: Alignment.topRight,
-        ),
-        RefreshIndicator(
-            child: PagedListView.separated(
-              pagingController: _pagingController,
-              builderDelegate: PagedChildBuilderDelegate<Todo>(
-                itemBuilder: (context, todo, index) =>
-                    TodoListViewItem(todo: todo),
-                firstPageErrorIndicatorBuilder: (context) => ErrorIndicator(
-                    error: _pagingController.error,
-                    onTryAgain: () => _pagingController.refresh()),
-                noItemsFoundIndicatorBuilder: (context) => EmptyListIndicator(),
-              ),
-              separatorBuilder: (context, index) => const SizedBox(
-                height: 15,
+  Widget build(BuildContext context) => Scaffold(
+        body: Column(
+          children: [
+            TextFormField(
+              controller: _search,
+              decoration: InputDecoration(
+                labelText: 'Search',
+                icon: Icon(Icons.search),
               ),
             ),
-            onRefresh: () => Future.sync(() => _pagingController.refresh()))
-      ],
-    );
-  }
+            Align(
+              child: IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () {
+                  Navigator.of(context).pushNamed('/add');
+                },
+              ),
+              alignment: Alignment.topRight,
+            ),
+            RefreshIndicator(
+                child: PagedListView.separated(
+                  pagingController: _pagingController,
+                  builderDelegate: PagedChildBuilderDelegate<Todo>(
+                    itemBuilder: (context, todo, index) =>
+                        TodoListViewItem(todo: todo),
+                    firstPageErrorIndicatorBuilder: (context) => ErrorIndicator(
+                        error: _pagingController.error,
+                        onTryAgain: () => _pagingController.refresh()),
+                    noItemsFoundIndicatorBuilder: (context) =>
+                        EmptyListIndicator(),
+                  ),
+                  separatorBuilder: (context, index) => const SizedBox(
+                    height: 15,
+                  ),
+                ),
+                onRefresh: () => Future.sync(() => _pagingController.refresh()))
+          ],
+        ));
 
   @override
   void initState() {
@@ -70,7 +70,7 @@ class ListPageState extends State<ListPage> {
         _pagingController.appendPage(stream, pageKey);
       }
     });
-    _search.addListener(() {});
+    // _search.addListener(() {});
     controller.addListener(_scrollListener);
     super.initState();
   }

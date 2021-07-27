@@ -60,7 +60,7 @@ class ListApi {
     } catch (e) {
       todoController.sink.addError(e);
     }
-    return todoStream;
+    return todoController.stream;
   }
 
   getNextTodo() async {

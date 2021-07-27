@@ -72,7 +72,7 @@ class AppPageState extends State<AddPage> {
                     });
                     Todo todo = Todo(
                         title: _title.text.trim(),
-                        todo: _content.text.trim(),
+                        content: _content.text.trim(),
                         imagePath: path);
                     ListApi().addTodo(todo: todo, context: context);
                   },

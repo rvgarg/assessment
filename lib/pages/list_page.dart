@@ -1,5 +1,6 @@
 import 'package:assessment/api/list_api.dart';
 import 'package:assessment/models/todo.dart';
+import 'package:assessment/pages/edit.dart';
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
@@ -109,7 +110,8 @@ class ListPageState extends State<ListPage> {
         ),
         IconButton(
           onPressed: () {
-            Navigator.pushNamed(context, '/edit', arguments: todo.id);
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => EditPage(todo: todo)));
           },
           icon: Icon(Icons.edit),
         ),
